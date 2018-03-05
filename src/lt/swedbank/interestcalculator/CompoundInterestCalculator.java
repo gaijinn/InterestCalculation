@@ -17,8 +17,11 @@ public class CompoundInterestCalculator {
        System.out.print("Amount: ");
        amount = scanner.nextDouble();
 
-       System.out.print("Interest rate: ");
-       interestRate = scanner.nextInt();
+       do {
+           System.out.print("Interest rate: ");
+           interestRate = scanner.nextInt();
+       }while(interestRate != 0);
+
 
        System.out.print("Period length (years): ");
        periodLength = scanner.nextInt();
