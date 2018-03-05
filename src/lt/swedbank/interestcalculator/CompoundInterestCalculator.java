@@ -1,12 +1,13 @@
 package lt.swedbank.interestcalculator;
 
 import java.util.Arrays;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class CompoundInterestCalculator {
 
     private static double[] intermediateInterest;
-    private static double [][] imtermediateInterestMatrix;
+    private static double[][] imtermediateInterestMatrix;
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -18,29 +19,53 @@ public class CompoundInterestCalculator {
         double[] interestRates = new double[i];
 
 
-
-        System.out.print("Amount: ");
-        amount = scanner.nextDouble();
+        do {
+            System.out.print("Amount: ");
+            if ((amount = scanner.nextDouble()) <= 0)
+                System.out.println("Invalid input! Try again!");
+        } while (amount <= 0);
 
         do {
             System.out.print("Interest rate: ");
-            interestRate = scanner.nextInt();
-            if (interestRate != 0 && i >= 2){
-                interestRates = Arrays.copyOf(interestRates, i);
-                interestRates[i-1] = interestRate;
-                i++;
-            }
-            else if (interestRate != 0 && i == 1){
-                interestRates[i-1] = interestRate;
-                i++;
+            interestRate = scanner.nextDouble();
+            if (interestRate > 0 && interestRate <= 100) {
+                if (interestRate != 0 && i >= 2) {
+                    interestRates = Arrays.copyOf(interestRates, i);
+                    interestRates[i - 1] = interestRate;
+                    i++;
+                } else if (interestRate != 0 && i == 1) {
+                    interestRates[i - 1] = interestRate;
+                    i++;
+                }
+            } else {
+                System.out.println("Invalid input! Try again!");
             }
         } while (interestRate != 0);
 
-        System.out.print("Period length (years): ");
-        periodLength = scanner.nextInt();
+        do {
+            System.out.print("Period length (years): ");
+            try {
+                periodLength = scanner.nextInt();
+                if (periodLength <= 0) {
+                    System.out.println("Invalid input! Try again!");
+                }
+            } catch (InputMismatchException exc) {
+                periodLength = 0;
+                System.out.println("Invalid input! Try again!");
+                scanner = new Scanner(System.in);
+            }
 
-        System.out.print("Compound frequency: ");
-        compoundFrequency = scanner.next();
+        } while (periodLength <= 0);
+
+
+        do {
+            System.out.print("Compound frequency: ");
+            compoundFrequency = scanner.next();
+            if (!compoundFrequency.equals("D") && !compoundFrequency.equals("W") && !compoundFrequency.equals("M") && !compoundFrequency.equals("Q") && !compoundFrequency.equals("H") && !compoundFrequency.equals("Y")) {
+                System.out.println("Invalid input! Try again!");
+            }
+        }
+        while (!compoundFrequency.equals("D") && !compoundFrequency.equals("W") && !compoundFrequency.equals("M") && !compoundFrequency.equals("Q") && !compoundFrequency.equals("H") && !compoundFrequency.equals("Y"));
 
         evaluateCompoundFrequency(compoundFrequency, amount, interestRate, periodLength, interestRates);
 
@@ -72,60 +97,60 @@ public class CompoundInterestCalculator {
     private static void evaluateCompoundFrequency(String choice, double amount, double rate, int year, double[] rates) {
         switch (choice) {
             case "D":
-                calculateMultipleInterestRates(amount,rate,year,365, rates);
-                printMatrix(rates.length,year*365);
+                calculateMultipleInterestRates(amount, rate, year, 365, rates);
+                printMatrix(rates.length, year * 365);
                 //System.out.printf("Total amount: %.2f", calculateCompoundInterest(amount, rate, year, 365));
                 break;
 
             case "W":
-                calculateMultipleInterestRates(amount,rate,year,52, rates);
-                printMatrix(rates.length,year*52);
+                calculateMultipleInterestRates(amount, rate, year, 52, rates);
+                printMatrix(rates.length, year * 52);
                 //System.out.printf("Total amount: %.2f", calculateCompoundInterest(amount, rate, year, 52));
                 break;
 
             case "M":
-                calculateMultipleInterestRates(amount,rate,year,12, rates);
-                printMatrix(rates.length,year*12);
+                calculateMultipleInterestRates(amount, rate, year, 12, rates);
+                printMatrix(rates.length, year * 12);
                 //System.out.printf("Total amount: %.2f", calculateCompoundInterest(amount, rate, year, 12));
                 break;
 
             case "Q":
-                calculateMultipleInterestRates(amount,rate,year,4, rates);
-                printMatrix(rates.length,year*4);
+                calculateMultipleInterestRates(amount, rate, year, 4, rates);
+                printMatrix(rates.length, year * 4);
                 //System.out.printf("Total amount: %.2f", calculateCompoundInterest(amount, rate, year, 4));
                 break;
 
             case "H":
-                calculateMultipleInterestRates(amount,rate,year,2, rates);
-                printMatrix(rates.length,year*2);
+                calculateMultipleInterestRates(amount, rate, year, 2, rates);
+                printMatrix(rates.length, year * 2);
                 //System.out.printf("Total amount: %.2f", calculateCompoundInterest(amount, rate, year, 2));
                 break;
 
             case "Y":
-                calculateMultipleInterestRates(amount,rate,year,1, rates);
-                printMatrix(rates.length,year);
+                calculateMultipleInterestRates(amount, rate, year, 1, rates);
+                printMatrix(rates.length, year);
                 //System.out.printf("Total amount: %.2f", calculateCompoundInterest(amount, rate, year, 1));
                 break;
 
             default:
-                calculateMultipleInterestRates(amount,rate,year,1, rates);
-                printMatrix(rates.length,year);
+                calculateMultipleInterestRates(amount, rate, year, 1, rates);
+                printMatrix(rates.length, year);
                 //System.out.printf("Total amount: %.2f", calculateCompoundInterest(amount, rate, year, 1));
                 break;
         }
     }
 
-    private static void calculateMultipleInterestRates(double amount, double rate, int year, int frequency, double[] rates){
-        imtermediateInterestMatrix = new double[rates.length][frequency*year];
-        for (int i = 0; i <rates.length ; i++){
-            calculateCompoundInterest(amount,rates[i],year, frequency, i);
+    private static void calculateMultipleInterestRates(double amount, double rate, int year, int frequency, double[] rates) {
+        imtermediateInterestMatrix = new double[rates.length][frequency * year];
+        for (int i = 0; i < rates.length; i++) {
+            calculateCompoundInterest(amount, rates[i], year, frequency, i);
         }
     }
 
-    private static void printMatrix(int length, int width){
-        for (int i = 0; i < length; i++){
-            for (int k = 0; k < width; k++){
-                System.out.printf("%.2f ",imtermediateInterestMatrix[i][k]);
+    private static void printMatrix(int length, int width) {
+        for (int i = 0; i < length; i++) {
+            for (int k = 0; k < width; k++) {
+                System.out.printf("%.2f ", imtermediateInterestMatrix[i][k]);
             }
             System.out.println();
         }
