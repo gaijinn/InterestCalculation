@@ -7,7 +7,7 @@ import java.util.Scanner;
 public class CompoundInterestCalculator {
 
     private static double[] intermediateInterest;
-    private static double[][] imtermediateInterestMatrix;
+    private static double[][] intermediateInterestMatrix;
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -81,11 +81,11 @@ public class CompoundInterestCalculator {
 
             if (i == 0) {
 //                intermediateInterest[i] = intermediateAmount;
-                imtermediateInterestMatrix[matrix][i] = intermediateAmount;
+                intermediateInterestMatrix[matrix][i] = intermediateAmount;
                 temp = intermediateAmount;
             } else {
 //                intermediateInterest[i] = intermediateAmount - temp;
-                imtermediateInterestMatrix[matrix][i] = intermediateAmount - temp;
+                intermediateInterestMatrix[matrix][i] = intermediateAmount - temp;
                 temp = intermediateAmount;
             }
         }
@@ -141,7 +141,7 @@ public class CompoundInterestCalculator {
     }
 
     private static void calculateMultipleInterestRates(double amount, double rate, int year, int frequency, double[] rates) {
-        imtermediateInterestMatrix = new double[rates.length][frequency * year];
+        intermediateInterestMatrix = new double[rates.length][frequency * year];
         for (int i = 0; i < rates.length; i++) {
             calculateCompoundInterest(amount, rates[i], year, frequency, i);
         }
@@ -150,7 +150,7 @@ public class CompoundInterestCalculator {
     private static void printMatrix(int length, int width) {
         for (int i = 0; i < length; i++) {
             for (int k = 0; k < width; k++) {
-                System.out.printf("%.2f ", imtermediateInterestMatrix[i][k]);
+                System.out.printf("%.2f ", intermediateInterestMatrix[i][k]);
             }
             System.out.println();
         }
