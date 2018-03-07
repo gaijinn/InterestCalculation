@@ -1,4 +1,4 @@
-package lt.swedbank.interestcalculator;
+package lt.swedbank.itacademy.interestcalculator;
 
 import java.util.Arrays;
 import java.util.InputMismatchException;
